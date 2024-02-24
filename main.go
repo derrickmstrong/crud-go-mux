@@ -25,23 +25,24 @@ type Director struct {
 	LastName  string `json:"lastName"`
 }
 
-// Step 6: Create the movie slice
+// Step 8: Create the movie slice
 var movies []Movie // slice of Movie
 
-// Step 7: Add some movies
+// Step 9: Create a function to initialize the movies (2 parts)
+// 9.1 Initialize the movies
 func initializeMovies() {
 	movies = append(movies, Movie{Id: "1", Isbn: "448743", Title: "Movie One", Director: &Director{FirstName: "Derrick", LastName: "Strong"}})
 	movies = append(movies, Movie{Id: "2", Isbn: "847564", Title: "Movie Two", Director: &Director{FirstName: "Shavon Nicole", LastName: "Strong"}})
 }
 
-// Step 9: Create the 5 CRUD routes
-// 9.1 Get all movies (GET)
+// Step 10: Create the 5 CRUD routes (5 parts)
+// 10.1 Get all movies (GET)
 func getMovies(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json") // set the header
 	json.NewEncoder(w).Encode(movies)                  // encode the movies and write to the response
 }
 
-// 9.2 Get a single movie (GET)
+// 10.2 Get a single movie (GET)
 func getMovie(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json") // set the header
 	params := mux.Vars(r)                              // get the params
@@ -55,7 +56,7 @@ func getMovie(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&Movie{}) // encode an empty movie and write to the response (no movie found)
 }
 
-// 9.3 Create a movie (POST)
+// 10.3 Create a movie (POST)
 func createMovie(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json") // set the header
 	var movie Movie                                    // create a movie
@@ -65,7 +66,7 @@ func createMovie(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(movie)                   // return and encode the movie and write to the response (movie created)
 }
 
-// 9.4 Update a movie (PUT)
+// 10.4 Update a movie (PUT)
 func updateMovie(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json") // set the header
 	params := mux.Vars(r)                              // get the params
@@ -83,7 +84,7 @@ func updateMovie(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(movies) // encode the movies and write to the response (movie not found)
 }
 
-// 9.5 Delete a movie (DELETE)
+// 10.5 Delete a movie (DELETE)
 func deleteMovie(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json") // set the header
 	params := mux.Vars(r)                              // get the params
@@ -102,7 +103,7 @@ func main() {
 	// Step 4: Create a new router
 	r := mux.NewRouter() // create a new router
 
-	// Step 8: Cont'. add some movies
+	// 9.2: Initialize the movies
 	initializeMovies()
 
 	// Step 5: Create the routes
@@ -112,9 +113,10 @@ func main() {
 	r.HandleFunc("/movies/{id}", updateMovie).Methods("PUT")    // update a movie
 	r.HandleFunc("/movies/{id}", deleteMovie).Methods("DELETE") // delete a movie
 
-	// Step 6: Start the server
+	// Step 6: Add the router to the server
 	http.Handle("/", r) // handle all requests with the router
 
+	// Step 7: Start the server
 	fmt.Println("Server running on port 8000")   // print a message
 	log.Fatal(http.ListenAndServe(":8000", nil)) // start the server
 }
